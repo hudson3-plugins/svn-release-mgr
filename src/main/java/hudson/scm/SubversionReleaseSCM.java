@@ -20,6 +20,7 @@ import hudson.model.TaskListener;
 import hudson.remoting.Callable;
 import hudson.remoting.Channel;
 import hudson.remoting.VirtualChannel;
+import hudson.scm.credential.SVNSSLAuthentication;
 import hudson.scm.subversion.Messages;
 import hudson.triggers.SCMTrigger;
 import hudson.util.EditDistance;
@@ -48,7 +49,6 @@ import org.tmatesoft.svn.core.auth.ISVNAuthenticationProvider;
 import org.tmatesoft.svn.core.auth.SVNAuthentication;
 import org.tmatesoft.svn.core.auth.SVNPasswordAuthentication;
 import org.tmatesoft.svn.core.auth.SVNSSHAuthentication;
-import org.tmatesoft.svn.core.auth.SVNSSLAuthentication;
 import org.tmatesoft.svn.core.auth.SVNUserNameAuthentication;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.dav.http.DefaultHTTPConnectionFactory;
@@ -236,7 +236,7 @@ public class SubversionReleaseSCM extends SCM implements Serializable {
      * Sets the <tt>SVN_REVISION</tt> environment variable during the build.
      */
     @Override
-    public void buildEnvVars(AbstractBuild build, Map<String, String> env) {
+    public void buildEnvVars(AbstractBuild<?, ?> build, Map<String, String> env) {
         super.buildEnvVars(build, env);
         
         ModuleLocation[] locations = getLocations(build);
@@ -352,7 +352,7 @@ public class SubversionReleaseSCM extends SCM implements Serializable {
         return false;
     }
     
-    public boolean checkout(AbstractBuild build, Launcher launcher, FilePath workspace, final BuildListener listener, File changelogFile) throws IOException, InterruptedException {
+    public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, final BuildListener listener, File changelogFile) throws IOException, InterruptedException {
         List<External> externals = checkout(build,workspace,listener);
 
         if(externals==null)
@@ -1623,4 +1623,19 @@ public class SubversionReleaseSCM extends SCM implements Serializable {
             }
         };
     }
+
+	@Override
+	public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build,
+			Launcher launcher, TaskListener listener) throws IOException,
+			InterruptedException {
+		return null; // We don't care about calculating revision, as it's input.
+	}
+
+	@Override
+	protected PollingResult compareRemoteRevisionWith(
+			AbstractProject<?, ?> project, Launcher launcher,
+			FilePath workspace, TaskListener listener, SCMRevisionState baseline)
+			throws IOException, InterruptedException {
+		return null; // We don't care about polling SCM.
+	}
 }

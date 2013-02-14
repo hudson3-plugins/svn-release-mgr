@@ -2,9 +2,10 @@ package hudson.scm;
 
 import hudson.remoting.Which;
 import hudson.scm.subversion.Messages;
+import hudson.scm.subversion.SVNEvent;
+
 import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.internal.wc.SVNExternal;
-import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 
 import java.io.File;
